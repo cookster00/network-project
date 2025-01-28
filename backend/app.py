@@ -23,7 +23,7 @@ def scan_network():
 @app.route('/results', methods=['GET'])
 def get_results():
     # For simplicity, return a static response
-    return jsonify([{"host": "192.168.1.1", "state": "up", "protocols": ["tcp", "udp"]}])
+    return jsonify([{"host": "192.168.1.1", "state": "up", "protocols": ["tcp", "udp"]}]) 
 
 if __name__ == '__main__':
     app.run(debug=True)
