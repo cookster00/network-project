@@ -1,0 +1,21 @@
+# Use a Python base image
+FROM python:3.9
+
+# Set working directory
+WORKDIR ./
+
+#Install nmap
+RUN apt-get update && apt-get install -y nmap
+
+# Copy dependencies and install them
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy the rest of the backend files
+COPY . .
+
+# Expose port 5000
+EXPOSE 5000
+
+# Start the backend server
+CMD ["python", "app.py"]

@@ -10,9 +10,8 @@
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "NODE_OPTIONS=--openssl-legacy-provider concurrently \"npm run start-frontend\" \"npm run start-backend\"",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider concurrently \"npm run start-frontend\"",
     "start-frontend" : "react-scripts start",
-    "start-backend": "cd ../backend && python3 app.py",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -35,7 +34,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://127.0.0.1:5000",
+  "proxy": "http://backend:5000",
   "devDependencies": {
     "concurrently": "^9.1.2"
   }
