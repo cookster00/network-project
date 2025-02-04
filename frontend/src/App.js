@@ -7,6 +7,7 @@ function App() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [scanCompleted, setScanCompleted] = useState(false);
 
   useEffect(() => {
     axios.get('/results')
@@ -25,6 +26,7 @@ function App() {
         console.log(response.data);
         setLoading(false);
         setResults(response.data.results);
+        setScanCompleted(true);
       })
       .catch(error => {
         console.error(error);
@@ -41,11 +43,22 @@ function App() {
       </button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <div>
-        {results.map((result, index) => (
+        {scanCompleted && results.map((result, index) => (
           <div key={index}>
             <p>Host: {result.host}</p>
             <p>State: {result.state}</p>
-            <p>Protocols: {result.protocols.join(', ')}</p>
+            {result.protocols.map((protocol, protoIndex) => (
+              <div key={protoIndex}>
+                <p>Protocol: {protocol.protocol}</p>
+                <ul>
+                  {protocol.ports.map((port, portIndex) => (
+                    <li key={portIndex}>
+                      Port: {port.port}, State: {port.state}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         ))}
       </div>
