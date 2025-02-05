@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
+import Navbar from '../Components/Navbar';
 
 const Dashboard = () => {
   const [networks, setNetworks] = useState([

@@ -1,5 +1,4 @@
 import React from 'react';
-import { FaShieldAlt, FaWifi, FaPlus } from 'react-icons/fa';
 import './Navbar.css'; // Assuming you will add some CSS for styling
 
 const Navbar = ({ networks, selectedNetwork, onSelectNetwork, onAddNetwork }) => {
@@ -7,7 +6,7 @@ const Navbar = ({ networks, selectedNetwork, onSelectNetwork, onAddNetwork }) =>
     <nav className="navbar">
       {/* Left Section - Branding & Logo */}
       <div className="navbar-left" onClick={() => window.location.href = '/'}>
-        <FaShieldAlt className="navbar-logo" />
+        <span className="navbar-logo">🔒</span> {/* Replace with a lock emoji or any other symbol */}
         <span className="navbar-brand">NetScan</span>
       </div>
 
@@ -24,7 +23,7 @@ const Navbar = ({ networks, selectedNetwork, onSelectNetwork, onAddNetwork }) =>
             </option>
           ))}
           <option value="add-new" onClick={onAddNetwork}>
-            <FaPlus /> Add New Network
+            ➕ Add New Network {/* Replace with a plus emoji or any other symbol */}
           </option>
         </select>
       </div>
