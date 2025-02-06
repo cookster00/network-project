@@ -1,34 +1,35 @@
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #282c34;
-    color: white;
-  }
-  
-  .navbar-left {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  
-  .navbar-logo {
-    font-size: 24px;
-    margin-right: 10px;
-  }
-  
-  .navbar-brand {
-    font-size: 20px;
-    font-weight: bold;
-  }
-  
-  .navbar-middle {
-    display: flex;
-    align-items: center;
-  }
-  
-  .network-dropdown {
-    padding: 5px;
-    font-size: 16px;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #282c34;
+  color: white;
+  height: 60px; /* Ensure this matches the top value in VulnerabilityList */
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.navbar-logo {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.navbar-brand {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.navbar-middle {
+  display: flex;
+  align-items: center;
+}
+
+.network-dropdown {
+  padding: 5px;
+  font-size: 16px;
+}
