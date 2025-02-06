@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import nmap  # or scapy for network scanning
 
+from scan import scan_network, get_ip
+
 app = Flask(__name__)
 
 CORS(app)
@@ -11,36 +13,17 @@ def home():
     return jsonify({"message": "Hello, Flask with nmap!"})
 
 @app.route('/scan', methods=['POST'])
-def scan_network():
-    print('scanning netwro')
-    nm = nmap.PortScanner()
-    nm.scan('127.0.0.1')  # Scanning local machine
-    results = []
-    for host in nm.all_hosts():
-        host_info = {
-            'host': host,
-            'state': nm[host].state(),
-            'protocols': []
-        }
-        for proto in nm[host].all_protocols():
-            protocol_info = {
-                'protocol': proto,
-                'ports': []
-            }
-            lport = nm[host][proto].keys()
-            for port in sorted(lport):
-                protocol_info['ports'].append({
-                    'port': port,
-                    'state': nm[host][proto][port]['state']
-                })
-            host_info['protocols'].append(protocol_info)
-        results.append(host_info)
-    return jsonify({"message": "Scan complete", "results": results})
+def scan():
+    # Scans network (currently the local machine) and returns state, protocols and ports
 
-@app.route('/results', methods=['GET'])
-def get_results():
-    # For simplicity, return a static response
-    return jsonify([{"host": "192.168.1.1", "state": "up", "protocols": ["tcp", "udp"]}]) 
+    # Grabbing Network IP from users machine
+    # IP = get_ip()
+    IP = '127.0.0.1'
+
+    # Scan the network
+    results = scan_network(IP)
+
+    return jsonify({"message": "Scan complete", "results": results})
 
 @app.errorhandler(400)
 def bad_request(error):
