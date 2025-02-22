@@ -9,30 +9,28 @@ function App() {
   const [error, setError] = useState(null);
   const [scanCompleted, setScanCompleted] = useState(false);
 
-  useEffect(() => {
-    axios.get('/results')
-      .then(response => setResults(response.data))
-      .catch(error => {
-        console.error(error);
-        setError('Failed to load results.');
-      });
-  }, []);
-
-  const handleScan = () => {
+  const handleScan = async () => {
     setLoading(true);
     setError(null);
-    axios.post('/scan')
-      .then(response => {
-        console.log(response.data);
-        setLoading(false);
-        setResults(response.data.results);
-        setScanCompleted(true);
-      })
-      .catch(error => {
-        console.error(error);
-        setLoading(false);
-        setError('An error occurred while scanning. Please try again.');
-      });
+
+    try {
+      // Get the client's IP address
+      const ipResponse = await axios.get('https://api.ipify.org?format=json');
+      const clientIp = ipResponse.data.ip;
+    
+      // Send the IP address to the backend
+      const response = await axios.post('/scan', { ip: clientIp });
+      console.log(response.data);
+      setLoading(false);
+      setResults(response.data.results);
+      setScanCompleted(true);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      setError('An error occurred while scanning. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
