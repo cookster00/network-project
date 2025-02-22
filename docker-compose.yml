@@ -5,7 +5,9 @@ services:
     build: ./backend
     ports:
       - "5000:5000"
-    network_mode: "host"
+    network_mode: "host" # Use the host's network stack
+    cap_add:
+      - NET_ADMIN  # Add necessary capabilities for network scanning
 
   frontend:
     build: ./frontend
@@ -13,4 +15,4 @@ services:
       - "3000:3000"
     depends_on:
       - backend
-    network_mode: "host"
+    network_mode: "host" # Use the host's network stack
