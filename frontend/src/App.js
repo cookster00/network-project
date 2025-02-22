@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  const [ipAddress, setIpAddress] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,12 +14,8 @@ function App() {
     setError(null);
 
     try {
-      // Get the client's IP address
-      const ipResponse = await axios.get('https://api.ipify.org?format=json');
-      const clientIp = ipResponse.data.ip;
-    
-      // Send the IP address to the backend
-      const response = await axios.post('/scan', { ip: clientIp });
+      // Send a request to the backend to perform the scan
+      const response = await axios.post('/scan', { ip: ipAddress });
       console.log(response.data);
       setLoading(false);
       setResults(response.data.results);
@@ -34,24 +30,47 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="App">
       <h1>Network Vulnerability Scanner</h1>
+      <input
+        type="text"
+        placeholder="Enter network IP address"
+        value={ipAddress}
+        onChange={(e) => setIpAddress(e.target.value)}
+      />
       <button onClick={handleScan} disabled={loading}>
         {loading ? 'Scanning...' : 'Start Scan'}
       </button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <div>
+      <div className="results">
         {scanCompleted && results.map((result, index) => (
-          <div key={index}>
-            <p>Host: {result.host}</p>
-            <p>State: {result.state}</p>
+          <div key={index} className="result">
+            <p><strong>Host:</strong> {result.host}</p>
+            <p><strong>State:</strong> {result.state}</p>
             {result.protocols.map((protocol, protoIndex) => (
-              <div key={protoIndex}>
-                <p>Protocol: {protocol.protocol}</p>
+              <div key={protoIndex} className="protocol">
+                <p><strong>Protocol:</strong> {protocol.protocol}</p>
                 <ul>
                   {protocol.ports.map((port, portIndex) => (
                     <li key={portIndex}>
-                      Port: {port.port}, State: {port.state}
+                      <strong>Port:</strong> {port.port}, <strong>State:</strong> {port.state}, <strong>Service:</strong> {port.service}, <strong>Version:</strong> {port.version}
+                      {port.vulnerabilities && Object.keys(port.vulnerabilities).length > 0 && (
+                        <ul>
+                          {Object.keys(port.vulnerabilities).map((vulnKey, vulnIndex) => (
+                            <li key={vulnIndex}>
+                              <strong>{vulnKey}:</strong> {port.vulnerabilities[vulnKey].title}
+                              <p>{port.vulnerabilities[vulnKey].description}</p>
+                              <a href={port.vulnerabilities[vulnKey].references[0]} target="_blank" rel="noopener noreferrer">More Info</a>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {port.smb_os_discovery && (
+                        <div>
+                          <strong>SMB OS Discovery:</strong>
+                          <pre>{JSON.stringify(port.smb_os_discovery, null, 2)}</pre>
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>
