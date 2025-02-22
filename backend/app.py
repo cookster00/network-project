@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import nmap  # or scapy for network scanning
+import socket
+
 
 from scan import scan_network, get_ip
 
@@ -17,11 +19,12 @@ def scan():
     # Scans network (currently the local machine) and returns state, protocols and ports
 
     # Grabbing Network IP from users machine
-    # IP = get_ip()
-    IP = '127.0.0.1'
+    IP = get_ip()
+
 
     # Scan the network
-    results = scan_network(IP)
+    # results = scan_network(IP)
+    results = IP
 
     return jsonify({"message": "Scan complete", "results": results})
 

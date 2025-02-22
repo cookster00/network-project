@@ -1,12 +1,12 @@
 # File for all scanning related functions
 
-
+import socket
 import nmap
 
 def scan_network(IP):
-
+    # Scans given IP and returns the results of scan 
     nm = nmap.PortScanner()
-    nm.scan(IP)  # Scanning local machine
+    nm.scan(IP)
     results = []
     for host in nm.all_hosts():
         host_info = {
@@ -30,5 +30,8 @@ def scan_network(IP):
     return results
 
 def get_ip():
-
-    return
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))  # Connects to Google DNS but doesn't send data
+    ip = s.getsockname()[0]
+    s.close()
+    return ip
