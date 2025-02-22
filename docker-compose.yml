@@ -5,8 +5,7 @@ services:
     build: ./backend
     ports:
       - "5000:5000"
-    networks:
-      - mynetwork
+    network_mode: "host"
 
   frontend:
     build: ./frontend
@@ -14,9 +13,4 @@ services:
       - "3000:3000"
     depends_on:
       - backend
-    networks:
-      - mynetwork
-
-networks:
-  mynetwork:
-    driver: bridge
+    network_mode: "host"
