@@ -1,7 +1,7 @@
 import React from 'react';
 import './Navbar.css'; // Assuming you will add some CSS for styling
 
-const Navbar = ({ networks, selectedNetwork, onSelectNetwork, onAddNetwork }) => {
+const Navbar = ({ onNewScan }) => {
   return (
     <nav className="navbar">
       {/* Left Section - Branding & Logo */}
@@ -10,22 +10,11 @@ const Navbar = ({ networks, selectedNetwork, onSelectNetwork, onAddNetwork }) =>
         <span className="navbar-brand">NetScan</span>
       </div>
 
-      {/* Middle Section - Network Selection Dropdown */}
-      <div className="navbar-middle">
-        <select
-          className="network-dropdown"
-          value={selectedNetwork}
-          onChange={(e) => onSelectNetwork(e.target.value)}
-        >
-          {networks.map((network, index) => (
-            <option key={index} value={network.name}>
-              {network.name} {network.status === 'high-risk' ? '🔴' : '🟢'}
-            </option>
-          ))}
-          <option value="add-new" onClick={onAddNetwork}>
-            ➕ Add New Network {/* Replace with a plus emoji or any other symbol */}
-          </option>
-        </select>
+      {/* Right Section - New Scan Button */}
+      <div className="navbar-right">
+        <button className="new-scan-button" onClick={onNewScan}>
+          ➕ New Scan {/* Replace with a plus emoji or any other symbol */}
+        </button>
       </div>
     </nav>
   );

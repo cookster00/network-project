@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #282c34;
+  background-color: #7d8570;
   color: white;
   height: 60px; /* Ensure this matches the top value in VulnerabilityList */
 }
@@ -24,12 +24,21 @@
   font-weight: bold;
 }
 
-.navbar-middle {
+.navbar-right {
   display: flex;
   align-items: center;
 }
 
-.network-dropdown {
-  padding: 5px;
+.new-scan-button {
+  padding: 5px 10px;
   font-size: 16px;
+  background-color: #333333; /* Dark gray */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.new-scan-button:hover {
+  background-color: #1a1a1a; /* Darker gray */
 }

@@ -1,33 +1,24 @@
 import React, { useState } from 'react';
 import Navbar from '../Components/Navbar';
+import NetworkInfo from '../Components/NetworkInfo';
+import VulnerabilityList from '../Components/VulnerabilityList';
 
 const Dashboard = () => {
-  const [networks, setNetworks] = useState([
-    { name: 'Home Wi-Fi', status: 'secure' },
-    { name: 'Office Network', status: 'high-risk' },
-    { name: 'Public Wi-Fi', status: 'secure' }
-  ]);
-  const [selectedNetwork, setSelectedNetwork] = useState(networks[0].name);
+  const [selectedNetwork, setSelectedNetwork] = useState('Home Wi-Fi');
 
-  const handleSelectNetwork = (networkName) => {
-    setSelectedNetwork(networkName);
-  };
-
-  const handleAddNetwork = () => {
-    const newNetworkName = prompt('Enter new network name:');
-    if (newNetworkName) {
-      setNetworks([...networks, { name: newNetworkName, status: 'secure' }]);
+  const handleNewScan = () => {
+    const newNetworkIP = prompt('Enter new network IP address:');
+    if (newNetworkIP) {
+      setSelectedNetwork(newNetworkIP);
+      // Trigger the scan here if needed
     }
   };
 
   return (
     <div>
-      <Navbar
-        networks={networks}
-        selectedNetwork={selectedNetwork}
-        onSelectNetwork={handleSelectNetwork}
-        onAddNetwork={handleAddNetwork}
-      />
+      <Navbar onNewScan={handleNewScan} />
+      <NetworkInfo selectedNetwork={selectedNetwork} />
+      <VulnerabilityList />
       {/* Rest of the dashboard content */}
     </div>
   );
