@@ -76,14 +76,18 @@ function App() {
                       )}
                     </li>
                   ))}
-                </div>
-              ))}
-            </div>
+                </ul>
+              </div>
+            ))}
           </div>
-        } />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </Router>
+        ))}
+      </div>
+      <Router>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </Router>
+    </div>
   );
 }
 
