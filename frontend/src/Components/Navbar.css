@@ -1,0 +1,44 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #7d8570;
+  color: white;
+  height: 60px; /* Ensure this matches the top value in VulnerabilityList */
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.navbar-logo {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.navbar-brand {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.new-scan-button {
+  padding: 5px 10px;
+  font-size: 16px;
+  background-color: #333333; /* Dark gray */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.new-scan-button:hover {
+  background-color: #1a1a1a; /* Darker gray */
+}

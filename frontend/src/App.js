@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Dashboard from './Pages/Dashboard';
 import './App.css';
 
 function App() {
@@ -36,33 +37,40 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>Network Vulnerability Scanner</h1>
-      <button onClick={handleScan} disabled={loading}>
-        {loading ? 'Scanning...' : 'Start Scan'}
-      </button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <div>
-        {scanCompleted && results.map((result, index) => (
-          <div key={index}>
-            <p>Host: {result.host}</p>
-            <p>State: {result.state}</p>
-            {result.protocols.map((protocol, protoIndex) => (
-              <div key={protoIndex}>
-                <p>Protocol: {protocol.protocol}</p>
-                <ul>
-                  {protocol.ports.map((port, portIndex) => (
-                    <li key={portIndex}>
-                      Port: {port.port}, State: {port.state}
-                    </li>
+    <Router>
+      <Routes>
+        <Route path="/" element={
+          <div>
+            <h1>Network Vulnerability Scanner</h1>
+            <button onClick={handleScan} disabled={loading}>
+              {loading ? 'Scanning...' : 'Start Scan'}
+            </button>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <div>
+              {scanCompleted && results.map((result, index) => (
+                <div key={index}>
+                  <p>Host: {result.host}</p>
+                  <p>State: {result.state}</p>
+                  {result.protocols.map((protocol, protoIndex) => (
+                    <div key={protoIndex}>
+                      <p>Protocol: {protocol.protocol}</p>
+                      <ul>
+                        {protocol.ports.map((port, portIndex) => (
+                          <li key={portIndex}>
+                            Port: {port.port}, State: {port.state}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
-                </ul>
-              </div>
-            ))}
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
-      </div>
-    </div>
+        } />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Router>
   );
 }
 
