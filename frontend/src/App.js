@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Dashboard from './Pages/Dashboard';
+
 import './App.css';
 
 function App() {
@@ -73,13 +76,14 @@ function App() {
                       )}
                     </li>
                   ))}
-                </ul>
-              </div>
-            ))}
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
-      </div>
-    </div>
+        } />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Router>
   );
 }
 
