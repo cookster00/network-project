@@ -99,6 +99,10 @@ function App() {
                 ))}
               </ul>
             </div>
+            <div className="result">
+              <h2>Overall Score</h2>
+              <p><strong>Score:</strong> {results.score}</p>
+            </div>
           </div>
         )}
       </div>
