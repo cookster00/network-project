@@ -7,7 +7,7 @@ import './App.css';
 
 function App() {
   const [ipAddress, setIpAddress] = useState('');
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [scanCompleted, setScanCompleted] = useState(false);
@@ -20,12 +20,10 @@ function App() {
       // Send a request to the backend to perform the scan
       const response = await axios.post('/scan', { ip: ipAddress });
       console.log(response.data);
-      setLoading(false);
       setResults(response.data.results);
       setScanCompleted(true);
     } catch (error) {
       console.error(error);
-      setLoading(false);
       setError('An error occurred while scanning. Please try again.');
     } finally {
       setLoading(false);
@@ -46,41 +44,63 @@ function App() {
       </button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <div className="results">
-        {scanCompleted && results.map((result, index) => (
-          <div key={index} className="result">
-            <p><strong>Host:</strong> {result.host}</p>
-            <p><strong>State:</strong> {result.state}</p>
-            {result.protocols.map((protocol, protoIndex) => (
-              <div key={protoIndex} className="protocol">
-                <p><strong>Protocol:</strong> {protocol.protocol}</p>
+        {scanCompleted && results && (
+          <div>
+            <div className="result">
+              <h2>FTP Scan</h2>
+              <p><strong>Should be worried?:</strong> {results.ftp[0] ? 'Yes' : 'No'}</p>
+              <p><strong>Details:</strong> {results.ftp[1] ? results.ftp[1] : 'No details available'}</p>
+            </div>
+            <div className="result">
+              <h2>SMB Scan</h2>
+              <p><strong>Should be worried?:</strong> {results.smb[0] ? 'Yes' : 'No'}</p>
+              <p><strong>Details:</strong> {results.smb[1] ? results.smb[1] : 'No details available'}</p>
+            </div>
+            <div className="result">
+              <h2>DNS Scan</h2>
+              <p><strong>Should be worried?:</strong> {results.dns[0] ? 'Yes' : 'No'}</p>
+              <p><strong>Details:</strong> {results.dns[1] ? results.dns[1] : 'No details available'}</p>
+            </div>
+            <div className="result">
+              <h2>SNMP Scan</h2>
+              <p><strong>Should be worried?:</strong> {results.snmp[0] ? 'Yes' : 'No'}</p>
+              <p><strong>Details:</strong> {results.snmp[1] ? results.snmp[1] : 'No details available'}</p>
+            </div>
+            <div className="result">
+              <h2>Vulnerabilities</h2>
+              {results.vulns[0] ? (
                 <ul>
-                  {protocol.ports.map((port, portIndex) => (
-                    <li key={portIndex}>
-                      <strong>Port:</strong> {port.port}, <strong>State:</strong> {port.state}, <strong>Service:</strong> {port.service}, <strong>Version:</strong> {port.version}
-                      {port.vulnerabilities && Object.keys(port.vulnerabilities).length > 0 && (
-                        <ul>
-                          {Object.keys(port.vulnerabilities).map((vulnKey, vulnIndex) => (
-                            <li key={vulnIndex}>
-                              <strong>{vulnKey}:</strong> {port.vulnerabilities[vulnKey].title}
-                              <p>{port.vulnerabilities[vulnKey].description}</p>
-                              <a href={port.vulnerabilities[vulnKey].references[0]} target="_blank" rel="noopener noreferrer">More Info</a>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      {port.smb_os_discovery && (
-                        <div>
-                          <strong>SMB OS Discovery:</strong>
-                          <pre>{JSON.stringify(port.smb_os_discovery, null, 2)}</pre>
-                        </div>
-                      )}
+                  {results.vulns[1].map((vuln, index) => (
+                    <li key={index}>
+                      <strong>Port:</strong> {vuln.port}, <strong>Service:</strong> {vuln.service}, <strong>Vulnerabilities:</strong>
+                      <ul>
+                      {Array.isArray(vuln.vulnerabilities) ? (
+                          vuln.vulnerabilities.map((vulnerability, vulnIndex) => (
+                            <li key={vulnIndex}>{vulnerability}</li>
+                          ))
+                        ) : (
+                          <li>{vuln.vulnerabilities}</li>
+                        )}
+                      </ul>
                     </li>
                   ))}
                 </ul>
-              </div>
-            ))}
+              ) : (
+                <p>{results.vulns[1]}</p>
+              )}
+            </div>
+            <div className="result">
+              <h2>Open Ports</h2>
+              <ul>
+                {results.ports.map((port, index) => (
+                  <li key={index}>
+                    <strong>Port:</strong> {port.port}, <strong>State:</strong> {port.state}, <strong>Service:</strong> {port.service}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-        ))}
+        )}
       </div>
       <Router>
         <Routes>
