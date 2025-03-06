@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Navbar from '../Components/Navbar';
 import NetworkInfo from '../Components/NetworkInfo';
 import VulnerabilityList from '../Components/VulnerabilityList';
 
@@ -16,7 +15,6 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Navbar onNewScan={handleNewScan} />
       <NetworkInfo selectedNetwork={selectedNetwork} />
       <VulnerabilityList />
       {/* Rest of the dashboard content */}
