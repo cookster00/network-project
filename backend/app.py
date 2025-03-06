@@ -12,6 +12,7 @@ CORS(app)
 def home():
     return jsonify({"message": "Hello, Flask with nmap!"})
 
+
 @app.route('/scan', methods=['POST'])
 def scan():
     data = request.get_json()
