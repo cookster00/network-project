@@ -30,6 +30,14 @@ function App() {
     }
   };
 
+  const formatVulnerabilityData = (title, result) => {
+    return {
+      title,
+      description: result[1],
+      level: result[0] ? 'high' : 'low'
+    };
+  };
+
   return (
     <div className="App">
       <Navbar />
@@ -48,26 +56,6 @@ function App() {
         <div className="results">
           {scanCompleted && results && (
             <div>
-              <div className="result">
-                <h2>FTP Scan</h2>
-                <p><strong>Should be worried?:</strong> {results.ftp[0] ? 'Yes' : 'No'}</p>
-                <p><strong>Details:</strong> {results.ftp[1] ? results.ftp[1] : 'No details available'}</p>
-              </div>
-              <div className="result">
-                <h2>SMB Scan</h2>
-                <p><strong>Should be worried?:</strong> {results.smb[0] ? 'Yes' : 'No'}</p>
-                <p><strong>Details:</strong> {results.smb[1] ? results.smb[1] : 'No details available'}</p>
-              </div>
-              <div className="result">
-                <h2>DNS Scan</h2>
-                <p><strong>Should be worried?:</strong> {results.dns[0] ? 'Yes' : 'No'}</p>
-                <p><strong>Details:</strong> {results.dns[1] ? results.dns[1] : 'No details available'}</p>
-              </div>
-              <div className="result">
-                <h2>SNMP Scan</h2>
-                <p><strong>Should be worried?:</strong> {results.snmp[0] ? 'Yes' : 'No'}</p>
-                <p><strong>Details:</strong> {results.snmp[1] ? results.snmp[1] : 'No details available'}</p>
-              </div>
               <div className="result">
                 <h2>Vulnerabilities</h2>
                 {results.vulns[0] ? (
@@ -110,7 +98,13 @@ function App() {
         </div>
       </div>
       <NetworkInfo selectedNetwork={ipAddress} />
-      <VulnerabilityList />
+      <VulnerabilityList vulnerabilities={results ? [
+        formatVulnerabilityData('FTP Scan', results.ftp),
+        formatVulnerabilityData('SMB Scan', results.smb),
+        formatVulnerabilityData('DNS Scan', results.dns),
+        formatVulnerabilityData('SNMP Scan', results.snmp),
+        ...results.vulns[1]
+      ] : []} />
     </div>
   );
 }
