@@ -7,24 +7,80 @@ import './App.css';
 
 function App() {
   const [ipAddress, setIpAddress] = useState('');
+  const [scanInfo, setScanInfo] = useState(null);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [scanCompleted, setScanCompleted] = useState(false);
+  const [scanStatusMessages, setScanStatusMessages] = useState([]);
 
   const handleScan = async () => {
     setLoading(true);
     setError(null);
+    setScanStatusMessages(['Starting scan...']);
+    let localScanInfo = {};
 
     try {
-      // Send a request to the backend to perform the scan
-      const response = await axios.post('/scan', { ip: ipAddress });
-      console.log(response.data);
-      setResults(response.data.results);
+      const updateScanStatus = (message) => {
+        setScanStatusMessages((prevMessages) => [...prevMessages, message]);
+      };
+
+      updateScanStatus('Scanning for Anonymous FTP Access...');
+      const ftpResponse = await axios.post('/ftp_scan', { ip: ipAddress });
+      localScanInfo.ftp = ftpResponse.data.results;
+
+      updateScanStatus('Scanning for Exposed SMB Shares...');
+      const smbResponse = await axios.post('/smb_scan', { ip: ipAddress });
+      localScanInfo.smb = smbResponse.data.results;
+
+      updateScanStatus('Scanning for DNS zone transfer misconfiguration...');
+      const dnsResponse = await axios.post('/dns_scan', { ip: ipAddress });
+      localScanInfo.dns = dnsResponse.data.results;
+
+      updateScanStatus('Scanning for outdated software and known vulnerabilities...');
+      const vulnsResponse = await axios.post('/vulns_scan', { ip: ipAddress });
+      localScanInfo.vulns = vulnsResponse.data.results;
+
+      updateScanStatus('Scanning for SNMP misconfigurations...');
+      const snmpResponse = await axios.post('/snmp_scan', { ip: ipAddress });
+      localScanInfo.snmp = snmpResponse.data.results;
+
+      updateScanStatus('Scanning for open ports...');
+      const portsResponse = await axios.post('/port_scan', { ip: ipAddress });
+      localScanInfo.ports = portsResponse.data.results;
+
+      setScanInfo(localScanInfo);
+
+      updateScanStatus('Calculating security score...');
+      const scoreResponse = await axios.post('/get_score', {
+        ftp: localScanInfo.ftp,
+        smb: localScanInfo.smb,
+        dns: localScanInfo.dns,
+        vulns: localScanInfo.vulns,
+        snmp: localScanInfo.snmp
+      });
+      setResults({ ...localScanInfo, score: scoreResponse.data.score });
+
+      console.log('Scan Results:', {
+        ftp: ftpResponse.data.results,
+        smb: smbResponse.data.results,
+        dns: dnsResponse.data.results,
+        vulns: vulnsResponse.data.results,
+        snmp: snmpResponse.data.results,
+        ports: portsResponse.data.results,
+        score: scoreResponse.data.score
+      });
+
       setScanCompleted(true);
+      updateScanStatus('Scan complete');
     } catch (error) {
       console.error(error);
       setError('An error occurred while scanning. Please try again.');
+      const updateScanStatus = (message) => {
+        setScanStatusMessages((prevMessages) => [...prevMessages, message]);
+      };
+
+      updateScanStatus('Scan failed');
     } finally {
       setLoading(false);
     }
@@ -97,7 +153,7 @@ function App() {
           )}
         </div>
       </div>
-      <NetworkInfo selectedNetwork={ipAddress} />
+      <NetworkInfo selectedNetwork={ipAddress} scanStatusMessages={scanStatusMessages} />
       <VulnerabilityList vulnerabilities={results ? [
         formatVulnerabilityData('FTP Scan', results.ftp),
         formatVulnerabilityData('SMB Scan', results.smb),

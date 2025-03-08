@@ -1,7 +1,7 @@
 import React from 'react';
 import './NetworkInfo.css'; // Assuming you will add some CSS for styling
 
-const NetworkInfo = ({ selectedNetwork }) => {
+const NetworkInfo = ({ selectedNetwork, scanStatusMessages }) => {
   // Placeholder data
   const networkInfo = {
     name: selectedNetwork,
@@ -12,11 +12,12 @@ const NetworkInfo = ({ selectedNetwork }) => {
 
   return (
     <div className="network-info">
-      <h2>Network Information</h2>
-      <p><strong>Network Name:</strong> {networkInfo.name}</p>
-      <p><strong>Network Type:</strong> {networkInfo.type}</p>
-      <p><strong>Total Devices Connected:</strong> {networkInfo.totalDevices}</p>
-      <p><strong>IP Address:</strong> {networkInfo.ipAddress}</p>
+      <h2>Scan Terminal</h2>
+      <div className="scan-status-messages">
+        {scanStatusMessages.map((message, index) => (
+          <p key={index}>{message}</p>
+        ))}
+      </div>
     </div>
   );
 };
