@@ -1,11 +1,11 @@
 .network-info-container {
   display: flex;
-  height: 25%;
+  height: 40%; /* Increase the height */
   position: fixed;
   bottom: 0;
   left: 0;
   width: 75%; /* Adjust width to take up 3/4 of the page */
-  background-color: #a4937d; /* Light tan background color */
+  background-color: #C3A283; /* Lighter tan background color */
   border-top: 1px solid #dee2e6;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
