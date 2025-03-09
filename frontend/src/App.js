@@ -113,6 +113,12 @@ function App() {
           {loading ? 'Scanning...' : 'Start Scan'}
         </button>
         {error && <p style={{ color: 'red' }}>{error}</p>}
+        {scanCompleted && results && (
+          <div className="score-visualization">
+            <h2>Network Security Score</h2>
+            <p>{results.score}</p>
+          </div>
+        )}
       </div>
       <NetworkInfo selectedNetwork={ipAddress} scanStatusMessages={scanStatusMessages} vulnerabilities={results ? [
         formatVulnerabilityData('Anonymous FTP Access', results.ftp),

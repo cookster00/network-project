@@ -37,3 +37,13 @@
     transform: rotate(360deg);
   }
 }
+
+.score-visualization {
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .score-visualization {
+    width: 100%;
+  }
+}

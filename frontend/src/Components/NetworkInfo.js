@@ -2,8 +2,8 @@ import React from 'react';
 import './NetworkInfo.css'; // Assuming you will add some CSS for styling
 
 const tips = {
-  'Anonymous FTP Access': 'Disable anonymous FTP access to prevent unauthorized access to your files.',
-  'Exposed SMB Shares': 'Restrict SMB shares to authorized users only to prevent data breaches.',
+  'Anonymous FTP Access': 'Turn off guest access for file sharing to keep your files safe.',
+  'Exposed SMB Shares': 'Make sure only trusted people can access shared files on your network.',
   'DNS zone transfer misconfiguration': 'Configure DNS servers to restrict zone transfers to trusted IP addresses.',
   'SNMP misconfigurations': 'Disable SNMP or configure it securely to prevent unauthorized access.',
   'Outdated software and known vulnerabilities': 'Regularly update software to patch known vulnerabilities.'
