@@ -40,10 +40,69 @@
 
 .score-visualization {
   margin-top: 20px;
+  width: 75%; /* Adjust width to take up 3/4 of the page */
+  max-width: 600px; /* Set a maximum width for the progress bar */
+}
+
+.progress-bar {
+  width: 100%; /* Adjust width to take up the full available space */
+  background-color: #e0e0e0;
+  border-radius: 25px;
+  overflow: hidden;
+  margin: 0 auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.progress {
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+  font-weight: bold;
+  transition: width 0.5s ease-in-out;
 }
 
 @media (max-width: 768px) {
   .score-visualization {
     width: 100%;
   }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 25%; /* Add margin to the right to avoid overlap with the vulnerability list */
+}
+
+input[type="text"] {
+  width: 300px;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+button {
+  width: 150px;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button:not(:disabled) {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:not(:disabled):hover {
+  background-color: #0056b3;
 }

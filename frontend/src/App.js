@@ -116,7 +116,11 @@ function App() {
         {scanCompleted && results && (
           <div className="score-visualization">
             <h2>Network Security Score</h2>
-            <p>{results.score}</p>
+            <div className="progress-bar">
+              <div className="progress" style={{ width: `${results.score}%`, backgroundColor: results.score >= 80 ? '#4caf50' : results.score >= 65 ? '#ffcc00' : '#ff4d4d' }}>
+                {results.score}%
+              </div>
+            </div>
           </div>
         )}
       </div>
