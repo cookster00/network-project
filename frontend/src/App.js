@@ -5,9 +5,28 @@ import NetworkInfo from './Components/NetworkInfo';
 import VulnerabilityList from './Components/VulnerabilityList';
 import './App.css';
 
+const formatVulnerabilityData = (title, result) => {
+  let level = 'low';
+  const vulnerabilities = result[1];
+
+  if (Array.isArray(vulnerabilities)) {
+    const nonEmptyVulns = vulnerabilities.filter(vuln => vuln.vulnerabilities !== 'No vulnerabilities found.');
+    if (nonEmptyVulns.length >= 2) {
+      level = 'high';
+    } else if (nonEmptyVulns.length === 1) {
+      level = 'medium';
+    }
+  }
+
+  return {
+    title,
+    description: Array.isArray(vulnerabilities) ? vulnerabilities.map(vuln => `${vuln.port}: ${vuln.vulnerabilities}`).join('\n') : vulnerabilities,
+    level
+  };
+};
+
 function App() {
   const [ipAddress, setIpAddress] = useState('');
-  const [scanInfo, setScanInfo] = useState(null);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -45,12 +64,6 @@ function App() {
       const snmpResponse = await axios.post('/snmp_scan', { ip: ipAddress });
       localScanInfo.snmp = snmpResponse.data.results;
 
-      updateScanStatus('Scanning for open ports...');
-      const portsResponse = await axios.post('/port_scan', { ip: ipAddress });
-      localScanInfo.ports = portsResponse.data.results;
-
-      setScanInfo(localScanInfo);
-
       updateScanStatus('Calculating security score...');
       const scoreResponse = await axios.post('/get_score', {
         ftp: localScanInfo.ftp,
@@ -67,7 +80,6 @@ function App() {
         dns: dnsResponse.data.results,
         vulns: vulnsResponse.data.results,
         snmp: snmpResponse.data.results,
-        ports: portsResponse.data.results,
         score: scoreResponse.data.score
       });
 
@@ -86,14 +98,6 @@ function App() {
     }
   };
 
-  const formatVulnerabilityData = (title, result) => {
-    return {
-      title,
-      description: result[1],
-      level: result[0] ? 'high' : 'low'
-    };
-  };
-
   return (
     <div className="App">
       <Navbar />
@@ -109,57 +113,20 @@ function App() {
           {loading ? 'Scanning...' : 'Start Scan'}
         </button>
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <div className="results">
-          {scanCompleted && results && (
-            <div>
-              <div className="result">
-                <h2>Vulnerabilities</h2>
-                {results.vulns[0] ? (
-                  <ul>
-                    {results.vulns[1].map((vuln, index) => (
-                      <li key={index}>
-                        <strong>Port:</strong> {vuln.port}, <strong>Service:</strong> {vuln.service}, <strong>Vulnerabilities:</strong>
-                        <ul>
-                        {Array.isArray(vuln.vulnerabilities) ? (
-                            vuln.vulnerabilities.map((vulnerability, vulnIndex) => (
-                              <li key={vulnIndex}>{vulnerability}</li>
-                            ))
-                          ) : (
-                            <li>{vuln.vulnerabilities}</li>
-                          )}
-                        </ul>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>{results.vulns[1]}</p>
-                )}
-              </div>
-              <div className="result">
-                <h2>Open Ports</h2>
-                <ul>
-                  {results.ports.map((port, index) => (
-                    <li key={index}>
-                      <strong>Port:</strong> {port.port}, <strong>State:</strong> {port.state}, <strong>Service:</strong> {port.service}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="result">
-                <h2>Overall Score</h2>
-                <p><strong>Score:</strong> {results.score}</p>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
-      <NetworkInfo selectedNetwork={ipAddress} scanStatusMessages={scanStatusMessages} />
+      <NetworkInfo selectedNetwork={ipAddress} scanStatusMessages={scanStatusMessages} vulnerabilities={results ? [
+        formatVulnerabilityData('Anonymous FTP Access', results.ftp),
+        formatVulnerabilityData('Exposed SMB Shares', results.smb),
+        formatVulnerabilityData('DNS zone transfer misconfiguration', results.dns),
+        formatVulnerabilityData('SNMP misconfigurations', results.snmp),
+        formatVulnerabilityData('Outdated software and known vulnerabilities', results.vulns)
+      ] : []} />
       <VulnerabilityList vulnerabilities={results ? [
-        formatVulnerabilityData('FTP Scan', results.ftp),
-        formatVulnerabilityData('SMB Scan', results.smb),
-        formatVulnerabilityData('DNS Scan', results.dns),
-        formatVulnerabilityData('SNMP Scan', results.snmp),
-        ...results.vulns[1]
+        formatVulnerabilityData('Anonymous FTP Access', results.ftp),
+        formatVulnerabilityData('Exposed SMB Shares', results.smb),
+        formatVulnerabilityData('DNS zone transfer misconfiguration', results.dns),
+        formatVulnerabilityData('SNMP misconfigurations', results.snmp),
+        formatVulnerabilityData('Outdated software and known vulnerabilities', results.vulns)
       ] : []} />
     </div>
   );

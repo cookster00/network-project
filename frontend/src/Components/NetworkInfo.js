@@ -1,22 +1,42 @@
 import React from 'react';
 import './NetworkInfo.css'; // Assuming you will add some CSS for styling
 
-const NetworkInfo = ({ selectedNetwork, scanStatusMessages }) => {
-  // Placeholder data
-  const networkInfo = {
-    name: selectedNetwork,
-    type: 'Wi-Fi',
-    totalDevices: 12,
-    ipAddress: '192.168.1.1'
+const tips = {
+  'Anonymous FTP Access': 'Disable anonymous FTP access to prevent unauthorized access to your files.',
+  'Exposed SMB Shares': 'Restrict SMB shares to authorized users only to prevent data breaches.',
+  'DNS zone transfer misconfiguration': 'Configure DNS servers to restrict zone transfers to trusted IP addresses.',
+  'SNMP misconfigurations': 'Disable SNMP or configure it securely to prevent unauthorized access.',
+  'Outdated software and known vulnerabilities': 'Regularly update software to patch known vulnerabilities.'
+};
+
+const generalTip = 'Your network is safe. Here are some general tips: Keep your software updated, use strong passwords, and regularly monitor your network for suspicious activity.';
+
+const NetworkInfo = ({ selectedNetwork, scanStatusMessages, vulnerabilities }) => {
+  const getTips = () => {
+    const redCards = vulnerabilities.filter(vuln => vuln.level === 'high');
+    if (redCards.length > 0) {
+      return redCards.map((vuln, index) => (
+        <p key={index}>{tips[vuln.title]}</p>
+      ));
+    } else {
+      return <p>{generalTip}</p>;
+    }
   };
 
   return (
-    <div className="network-info">
-      <h2>Scan Terminal</h2>
-      <div className="scan-status-messages">
-        {scanStatusMessages.map((message, index) => (
-          <p key={index}>{message}</p>
-        ))}
+    <div className="network-info-container">
+      <div className="network-info">
+        <h2>Scan Terminal</h2>
+        <div className="scan-status-messages">
+          {scanStatusMessages.map((message, index) => (
+            <p key={index}>{message}</p>
+          ))}
+        </div>
+      </div>
+      <div className="separator-line"></div>
+      <div className="tips-section">
+        <h2>Tips</h2>
+        {getTips()}
       </div>
     </div>
   );
