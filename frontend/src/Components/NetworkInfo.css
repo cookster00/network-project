@@ -14,6 +14,14 @@
   width: 25%; /* Left 1/4 of the page */
   padding: 10px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+}
+
+.network-info h2 {
+  text-align: center; /* Center the title text */
+  width: 100%; /* Ensure the title takes up the full width */
 }
 
 .separator-line {
@@ -28,10 +36,9 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center the content horizontally */
-  justify-content: center; /* Center the content vertically */
-  text-align: center; /* Center the text */
-  margin: 0 auto; /* Center the section within the container */
+  align-items: flex-start; /* Align content to the left */
+  text-align: left; /* Align text to the left */
+  margin: 0; /* Remove side margins */
 }
 
 .scan-status-messages {
@@ -40,6 +47,6 @@
 }
 
 .tips-section p {
-  margin: 5px 20px; /* Adjust margin for tighter spacing and add side margins */
-  width: calc(100% - 40px); /* Ensure the text takes up the full width minus side margins */
+  margin: 5px 0; /* Adjust margin for tighter spacing */
+  width: 100%; /* Ensure the text takes up the full width */
 }
