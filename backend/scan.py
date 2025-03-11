@@ -50,8 +50,15 @@ def scan_network(IP):
 
     return results
 
-def ftp_results(nm, IP):
-    ''' Parsing results from ftp vulnerability scan '''
+def scan_ftp(IP):
+    ''' ftp vulnerability scan '''
+
+    # Initialize the nmap PortScanner
+    nm = nmap.PortScanner()
+    nm.scan(hosts=f'{IP}', arguments='--script=ftp-anon -p 21')
+
+
+    # Parsing results
     if "21" in nm[IP]["tcp"]:
         ftp_info = nm[IP]["tcp"][21]
 
@@ -60,13 +67,19 @@ def ftp_results(nm, IP):
         else:
             results = (False, "FTP Anonymous Access is not Allowed")
     else:
-        results = (False, "FTP port (21) is closed or filtered.")
+        results = (False, "Port 21 is closed or filtered, no chance of Anonymous FTP Access.")
 
     return results
 
-def smb_results(nm, IP):
-    ''' Parsing results from smb vuln scan '''
-    # Check if the target has an open SMB port
+def scan_smb(IP):
+    ''' smb vulnerability scan '''
+
+    # Initialize the nmap PortScanner
+    nm = nmap.PortScanner()
+    nm.scan(hosts=f'{IP}', arguments='--script=smb-enum-shares -p 445')
+
+
+    # Parsing results
     if "445" in nm[IP]["tcp"]:
         smb_info = nm[IP]["tcp"][445]
 
@@ -75,13 +88,19 @@ def smb_results(nm, IP):
         else:
             results = (False, "No Exposed SMB Shares Found.")
     else:
-        print("\n[-] SMB port (445) is closed or filtered.")
-        results = (False, "SMB port (445) is closed or filtered")
+        results = (False, "Port 445 is closed or filtered, no chance of exposed SMB Shares.")
 
     return results
 
-def dns_results(nm, IP):
-    ''' Parsing results from dns zone transfer scan '''
+def scan_dns(IP):
+    ''' dns vulnerability scan '''
+
+    # Initialize the nmap PortScanner
+    nm = nmap.PortScanner()
+    nm.scan(hosts=f'{IP}', arguments='--script=dns-zone-transfer -p 53')
+
+
+    # Parsing results
     if "53" in nm[IP]["tcp"]:
         dns_info = nm[IP]["tcp"][53]
 
@@ -90,12 +109,18 @@ def dns_results(nm, IP):
         else:
             results = (False, "DNS Zone Transfer Not Allowed or No Data Found.")
     else:
-        results = (False, "DNS port (53) is closed or filtered.")
+        results = (False, "Port 53 is closed or filtered, no chance of DNS Zone Transfer.")
 
     return results
 
-def vulns_results(nm, IP):
-    ''' Parsing results from vulners scan '''
+def scan_vulns(IP):
+    ''' Vulnerability scan '''
+
+    # Initialize the nmap PortScanner
+    nm = nmap.PortScanner()
+    nm.scan(hosts=f'{IP}', arguments='--script=vulners -sV')
+
+
     vulnerabilities = []
 
     if IP in nm.all_hosts():
@@ -120,8 +145,14 @@ def vulns_results(nm, IP):
     
     return results
 
-def snmp_results(nm, IP):
-    ''' Parsing results from snmp scan '''
+def scan_snmp(IP):
+    ''' snmp vulnerability scan '''
+
+    # Initialize the nmap PortScanner
+    nm = nmap.PortScanner()
+    nm.scan(hosts=f'{IP}', arguments="--script=snmp-brute -p 161")
+
+    # Parsing results
     if "udp" in nm[IP] and 161 in nm[IP]["udp"]:
         snmp_info = nm[IP]["udp"][161]
 
@@ -130,12 +161,18 @@ def snmp_results(nm, IP):
         else:
             results = (False, "SNMP Brute Force Failed.")
     else:
-        results = (False, "SNMP port (161) is closed or filtered.")
+        results = (False, "Port 161 is closed or filtered, no chance of SNMP misconfigurations.")
 
     return results 
 
-def port_results(nm, IP):
-    ''' Parsing results from port scan '''
+def scan_ports(IP):
+    ''' Scan all open ports and their states '''
+
+    # Initialize the nmap PortScanner
+    nm = nmap.PortScanner()
+    nm.scan(hosts=f'{IP}', arguments='-p-')  # Scan all ports
+
+    # Parsing results
     port_info = []
     for proto in nm[IP].all_protocols():
         lport = nm[IP][proto].keys()

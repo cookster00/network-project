@@ -1,12 +1,52 @@
-.network-info {
+.network-info-container {
+  display: flex;
+  height: 40%; /* Increase the height */
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 75%;
-  height: 25%;
-  background-color: #a4937d; /* Light tan background color */
+  width: 75%; /* Adjust width to take up 3/4 of the page */
+  background-color: #C3A283; /* Lighter tan background color */
   border-top: 1px solid #dee2e6;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.network-info {
+  width: 25%; /* Left 1/4 of the page */
+  padding: 10px;
   overflow-y: auto;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+}
+
+.network-info h2 {
+  text-align: center; /* Center the title text */
+  width: 100%; /* Ensure the title takes up the full width */
+}
+
+.separator-line {
+  width: 1px;
+  background-color: #dee2e6;
+  height: 100%;
+}
+
+.tips-section {
+  width: calc(65%); /* Adjust width to take up the remaining space minus margins */
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align content to the left */
+  text-align: left; /* Align text to the left */
+  margin: 0; /* Remove side margins */
+}
+
+.scan-status-messages {
+  text-align: left; /* Ensure text is aligned to the left */
+  line-height: 1.2; /* Adjust line spacing to be tighter */
+}
+
+.tips-section p {
+  margin: 5px 0; /* Adjust margin for tighter spacing */
+  width: 100%; /* Ensure the text takes up the full width */
 }

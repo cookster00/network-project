@@ -5,26 +5,94 @@ import NetworkInfo from './Components/NetworkInfo';
 import VulnerabilityList from './Components/VulnerabilityList';
 import './App.css';
 
+const formatVulnerabilityData = (title, result) => {
+  let level = 'low';
+  const vulnerabilities = result[1];
+
+  if (Array.isArray(vulnerabilities)) {
+    const nonEmptyVulns = vulnerabilities.filter(vuln => vuln.vulnerabilities !== 'No vulnerabilities found.');
+    if (nonEmptyVulns.length >= 2) {
+      level = 'high';
+    } else if (nonEmptyVulns.length === 1) {
+      level = 'medium';
+    }
+  }
+
+  return {
+    title,
+    description: Array.isArray(vulnerabilities) ? vulnerabilities.map(vuln => `${vuln.port}: ${vuln.vulnerabilities}`).join('\n') : vulnerabilities,
+    level
+  };
+};
+
 function App() {
   const [ipAddress, setIpAddress] = useState('');
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [scanCompleted, setScanCompleted] = useState(false);
+  const [scanStatusMessages, setScanStatusMessages] = useState([]);
 
   const handleScan = async () => {
     setLoading(true);
     setError(null);
+    setScanStatusMessages(['Starting scan...']);
+    let localScanInfo = {};
 
     try {
-      // Send a request to the backend to perform the scan
-      const response = await axios.post('/scan', { ip: ipAddress });
-      console.log(response.data);
-      setResults(response.data.results);
+      const updateScanStatus = (message) => {
+        setScanStatusMessages((prevMessages) => [...prevMessages, message]);
+      };
+
+      updateScanStatus('Scanning for Anonymous FTP Access...');
+      const ftpResponse = await axios.post('/ftp_scan', { ip: ipAddress });
+      localScanInfo.ftp = ftpResponse.data.results;
+
+      updateScanStatus('Scanning for Exposed SMB Shares...');
+      const smbResponse = await axios.post('/smb_scan', { ip: ipAddress });
+      localScanInfo.smb = smbResponse.data.results;
+
+      updateScanStatus('Scanning for DNS zone transfer misconfiguration...');
+      const dnsResponse = await axios.post('/dns_scan', { ip: ipAddress });
+      localScanInfo.dns = dnsResponse.data.results;
+
+      updateScanStatus('Scanning for outdated software and known vulnerabilities...');
+      const vulnsResponse = await axios.post('/vulns_scan', { ip: ipAddress });
+      localScanInfo.vulns = vulnsResponse.data.results;
+
+      updateScanStatus('Scanning for SNMP misconfigurations...');
+      const snmpResponse = await axios.post('/snmp_scan', { ip: ipAddress });
+      localScanInfo.snmp = snmpResponse.data.results;
+
+      updateScanStatus('Calculating security score...');
+      const scoreResponse = await axios.post('/get_score', {
+        ftp: localScanInfo.ftp,
+        smb: localScanInfo.smb,
+        dns: localScanInfo.dns,
+        vulns: localScanInfo.vulns,
+        snmp: localScanInfo.snmp
+      });
+      setResults({ ...localScanInfo, score: scoreResponse.data.score });
+
+      console.log('Scan Results:', {
+        ftp: ftpResponse.data.results,
+        smb: smbResponse.data.results,
+        dns: dnsResponse.data.results,
+        vulns: vulnsResponse.data.results,
+        snmp: snmpResponse.data.results,
+        score: scoreResponse.data.score
+      });
+
       setScanCompleted(true);
+      updateScanStatus('Scan complete');
     } catch (error) {
       console.error(error);
       setError('An error occurred while scanning. Please try again.');
+      const updateScanStatus = (message) => {
+        setScanStatusMessages((prevMessages) => [...prevMessages, message]);
+      };
+
+      updateScanStatus('Scan failed');
     } finally {
       setLoading(false);
     }
@@ -45,72 +113,31 @@ function App() {
           {loading ? 'Scanning...' : 'Start Scan'}
         </button>
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <div className="results">
-          {scanCompleted && results && (
-            <div>
-              <div className="result">
-                <h2>FTP Scan</h2>
-                <p><strong>Should be worried?:</strong> {results.ftp[0] ? 'Yes' : 'No'}</p>
-                <p><strong>Details:</strong> {results.ftp[1] ? results.ftp[1] : 'No details available'}</p>
-              </div>
-              <div className="result">
-                <h2>SMB Scan</h2>
-                <p><strong>Should be worried?:</strong> {results.smb[0] ? 'Yes' : 'No'}</p>
-                <p><strong>Details:</strong> {results.smb[1] ? results.smb[1] : 'No details available'}</p>
-              </div>
-              <div className="result">
-                <h2>DNS Scan</h2>
-                <p><strong>Should be worried?:</strong> {results.dns[0] ? 'Yes' : 'No'}</p>
-                <p><strong>Details:</strong> {results.dns[1] ? results.dns[1] : 'No details available'}</p>
-              </div>
-              <div className="result">
-                <h2>SNMP Scan</h2>
-                <p><strong>Should be worried?:</strong> {results.snmp[0] ? 'Yes' : 'No'}</p>
-                <p><strong>Details:</strong> {results.snmp[1] ? results.snmp[1] : 'No details available'}</p>
-              </div>
-              <div className="result">
-                <h2>Vulnerabilities</h2>
-                {results.vulns[0] ? (
-                  <ul>
-                    {results.vulns[1].map((vuln, index) => (
-                      <li key={index}>
-                        <strong>Port:</strong> {vuln.port}, <strong>Service:</strong> {vuln.service}, <strong>Vulnerabilities:</strong>
-                        <ul>
-                        {Array.isArray(vuln.vulnerabilities) ? (
-                            vuln.vulnerabilities.map((vulnerability, vulnIndex) => (
-                              <li key={vulnIndex}>{vulnerability}</li>
-                            ))
-                          ) : (
-                            <li>{vuln.vulnerabilities}</li>
-                          )}
-                        </ul>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>{results.vulns[1]}</p>
-                )}
-              </div>
-              <div className="result">
-                <h2>Open Ports</h2>
-                <ul>
-                  {results.ports.map((port, index) => (
-                    <li key={index}>
-                      <strong>Port:</strong> {port.port}, <strong>State:</strong> {port.state}, <strong>Service:</strong> {port.service}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="result">
-                <h2>Overall Score</h2>
-                <p><strong>Score:</strong> {results.score}</p>
+        {scanCompleted && results && (
+          <div className="score-visualization">
+            <h2>Network Security Score</h2>
+            <div className="progress-bar">
+              <div className="progress" style={{ width: `${results.score}%`, backgroundColor: results.score >= 80 ? '#4caf50' : results.score >= 65 ? '#ffcc00' : '#ff4d4d' }}>
+                {results.score}%
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-      <NetworkInfo selectedNetwork={ipAddress} />
-      <VulnerabilityList />
+      <NetworkInfo selectedNetwork={ipAddress} scanStatusMessages={scanStatusMessages} vulnerabilities={results ? [
+        formatVulnerabilityData('Anonymous FTP Access', results.ftp),
+        formatVulnerabilityData('Exposed SMB Shares', results.smb),
+        formatVulnerabilityData('DNS zone transfer misconfiguration', results.dns),
+        formatVulnerabilityData('SNMP misconfigurations', results.snmp),
+        formatVulnerabilityData('Outdated software and known vulnerabilities', results.vulns)
+      ] : []} />
+      <VulnerabilityList vulnerabilities={results ? [
+        formatVulnerabilityData('Anonymous FTP Access', results.ftp),
+        formatVulnerabilityData('Exposed SMB Shares', results.smb),
+        formatVulnerabilityData('DNS zone transfer misconfiguration', results.dns),
+        formatVulnerabilityData('SNMP misconfigurations', results.snmp),
+        formatVulnerabilityData('Outdated software and known vulnerabilities', results.vulns)
+      ] : []} />
     </div>
   );
 }
