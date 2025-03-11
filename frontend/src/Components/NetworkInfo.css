@@ -31,7 +31,7 @@
 }
 
 .tips-section {
-  width: 50%; /* Middle 2/4 of the page */
+  width: calc(65%); /* Adjust width to take up the remaining space minus margins */
   padding: 10px;
   overflow-y: auto;
   display: flex;
