@@ -33,7 +33,17 @@ function App() {
   const [scanCompleted, setScanCompleted] = useState(false);
   const [scanStatusMessages, setScanStatusMessages] = useState([]);
 
+  const validateIpAddress = (ip) => {
+    const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    return ipRegex.test(ip);
+  };
+
   const handleScan = async () => {
+    if (!validateIpAddress(ipAddress)) {
+      setError('Please enter a valid IP address.');
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setScanStatusMessages(['Starting scan...']);
