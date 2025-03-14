@@ -1,45 +1,64 @@
-# Network Vulnerability Scanner
+Network Vulnerability Scanner
 
-The **Network Vulnerability Scanner** is a tool designed to scan networks for vulnerabilities and provide actionable insights to improve network security.
+The Network Vulnerability Scanner is a powerful tool designed to scan networks for vulnerabilities and provide actionable insights to enhance network security.
 
----
+Features
 
-## How to Use
+Scan for open ports and potential vulnerabilities.
 
-### 1. Prerequisites
-- Ensure you have **Docker** and **Docker Compose** installed on your system.
+Generate a security risk score.
 
-### 2. Setup
-1. Clone the repository:
-   
-bash
-   git clone <repository-url>
-   cd network-project
+User-friendly React-based interface.
 
-2. Build and start the services:
-   
-bash
-   docker-compose up --build
+Dockerized environment for easy setup and deployment.
 
+Prerequisites
 
-### 3. Access the Application
-- Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
+Ensure you have the following installed on your system:
 
-### 4. Perform a Scan
-1. Enter the IP address of the network you want to scan in the input field.
-2. Click the "Start Scan" button.
-3. View the results, including vulnerabilities, open ports, and the overall security score.
+Docker
 
----
+Docker Compose
 
-## Stopping the Application
-To stop the application, press Ctrl+C in the terminal where docker-compose is running, or run:
-bash
+Setup Guide
+
+1. Clone the Repository
+
+git clone https://github.com/cookster00/network-project
+cd network-project
+
+2. Build and Run the Services
+
+docker-compose up --build
+
+3. Access the Application
+
+Open your browser and navigate to http://localhost:3000.
+
+4. Perform a Network Scan
+
+Enter the target IP address or domain in the input field.
+
+Click the "Start Scan" button.
+
+View the detailed results, including:
+
+Open ports
+
+Detected vulnerabilities
+
+Security risk score
+
+Stopping the Application
+
+To stop the application, either press Ctrl+C in the terminal or run:
+
 docker-compose down
 
+Additional Notes
 
----
+The backend runs on port 5000 and the frontend on port 3000.
 
-## Notes
-- The backend runs on port 5000, and the frontend runs on port 3000.
-- Ensure the target network allows scanning and that you have permission to perform scans. (improve this READme)
+Ensure you have the necessary authorization to scan the target network to avoid legal or ethical issues.
+
+Regularly update the vulnerability database for accurate results.
