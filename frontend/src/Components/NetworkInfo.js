@@ -13,7 +13,7 @@ const generalTip = 'Your network is safe!\n\nHere are some general tips: Keep yo
 
 const NetworkInfo = ({ selectedNetwork, scanStatusMessages, vulnerabilities }) => {
   const getTips = () => {
-    const redCards = vulnerabilities;
+    const redCards = vulnerabilities.filter(vuln => vuln.level === 'high' || vuln.level === 'medium');
     if (redCards.length > 0) {
       return (
         <div>

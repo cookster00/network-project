@@ -31,14 +31,14 @@
 }
 
 .tips-section {
-  width: calc(65%); /* Adjust width to take up the remaining space minus margins */
+  width: calc(69%); /* Adjust width to take up the remaining space minus margins */
   padding: 10px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* Align content to the left */
   text-align: left; /* Align text to the left */
-  margin: 0; /* Remove side margins */
+  margin: 10; /* Remove side margins */
 }
 
 .scan-status-messages {

@@ -17,6 +17,11 @@ const formatVulnerabilityData = (title, result) => {
       level = 'medium';
     }
   }
+  else {
+    if (result[0] === true) {
+      level = 'high';
+    }
+  }
 
   return {
     title,

@@ -29,7 +29,7 @@ Setup Guide
 
 2. Build and Run the Services
 
-  -docker-compose up --build
+  - Use command "docker-compose up --build" or "docker compose up --build"
 
 3. Access the Application
 
@@ -53,7 +53,7 @@ Stopping the Application
 
   To stop the application, either press Ctrl+C in the terminal or run:
 
-  docker-compose down
+  "docker-compose down" or "docker compose down"
 
 Additional Notes
 
